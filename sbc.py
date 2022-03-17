@@ -23,10 +23,17 @@ class ClassifyAnimalia(KnowledgeEngine):
     def begin(self):
         yield Fact(action='start')
 
+    ################# ANIMAIS EM GERAL ########################################################
+
     # Possui coluna vertebral?
     @Rule(Fact(action='start'), NOT(Feature(has_spine=W())))
     def ask_spine(self):
         self.declare(Feature(has_spine=make_question('Esse animal possui coluna vertebral?')))
+
+    # Vive só na água?
+    @Rule(AND(OR(Feature(has_wings=False),Feature(has_segmented_body=False)), NOT(Feature(aquatic=W()))))
+    def ask_aquatic(self):
+        self.declare(Feature(aquatic=make_question('Esse animal vive somente na água?')))
 
     ################### INVERTEBRADOS #########################################################
 
@@ -100,17 +107,17 @@ class ClassifyAnimalia(KnowledgeEngine):
     def annelid(self):
         self.declare(Creature(name='Anelídeo'))
 
+    # Resposta: É um peixe cartilaginoso (invertebrado)
+    @Rule(AND(Feature(has_spine=False), Feature(aquatic=True), NOT(Creature(name=W()))))
+    def cartilaginous_fish(self):
+        self.declare(Creature(name='Peixe Cartilaginoso'))
+
     ################### VERTEBRADOS #########################################################
 
     # Possui asas?
     @Rule(AND(Feature(has_spine=True), NOT(Feature(has_wings=W()))))
     def ask_wings(self):
         self.declare(Feature(has_wings=make_question('Esse animal possui asas?')))
-
-    # Vive só na água?
-    @Rule(AND(Feature(has_wings=False), NOT(Feature(aquatic=W()))))
-    def ask_aquatic(self):
-        self.declare(Feature(aquatic=make_question('Esse animal vive somente na água?')))
 
     # Vive parcialmente na água?
     @Rule(AND(Feature(aquatic=False), NOT(Feature(partial_aquatic=W()))))
@@ -133,8 +140,8 @@ class ClassifyAnimalia(KnowledgeEngine):
         self.declare(Creature(name='Ave'))
 
     # Resposta: É um peixe ósseo (vertebrado)
-    @Rule(AND(Feature(aquatic=True), NOT(Creature(name=W()))))
-    def fish(self):
+    @Rule(AND(Feature(has_spine=True), Feature(aquatic=True), NOT(Creature(name=W()))))
+    def bony_fish(self):
         self.declare(Creature(name='Peixe Ósseo'))
 
     # Resposta: É um anfíbio
@@ -156,7 +163,7 @@ class ClassifyAnimalia(KnowledgeEngine):
 
     # Casos não classificados
     # Poderia, caso houvesse tempo, ser utilizado para extensões em tempo de execução
-    @Rule(OR(Feature(has_fur=False), Feature(has_segmented_body=False)))
+    @Rule(OR(Feature(has_fur=False), AND(Feature(has_spine=False), Feature(aquatic=False))))
     def tell_unknown(self):
         print('Não conheço essa criatura.')
         self.declare(Fact(end=True))
