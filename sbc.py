@@ -1,5 +1,9 @@
 from experta import *
 
+####################################
+###### CLASSIFICADOR DE ANIMAIS
+###################################
+
 # Função auxiliar para fazer perguntas de S/N
 def make_question(text):
     while True:
