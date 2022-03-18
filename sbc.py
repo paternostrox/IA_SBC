@@ -52,10 +52,10 @@ class ClassifyAnimalia(KnowledgeEngine):
     def ask_leg_amount_8(self):
         self.declare(Feature(has_legs_8=make_question('Esse animal possui 8 pernas?')))
 
-    # Possui manto ou casco?
+    # Possui manto ou concha?
     @Rule(AND(Feature(has_legs=False), NOT(Feature(has_shell=W()))))
     def ask_shell(self):
-        self.declare(Feature(has_shell=make_question('Esse animal possui manto (epiderme esclerotizada) ou casco?')))
+        self.declare(Feature(has_shell=make_question('Esse animal possui manto (pele endurecida) ou concha?')))
 
     # Possui corpo gelatinoso?
     @Rule(AND(Feature(has_shell=False), NOT(Feature(has_jelly_body=W()))))
