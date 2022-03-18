@@ -186,6 +186,7 @@ class ClassifyAnimalia(KnowledgeEngine):
         engine.run()
 
 engine = ClassifyAnimalia()
+print('Vamos jogar um jogo, vou adivinhar seu animal.')
 engine.reset()  # Prepare the engine for the execution.
 engine.run()  # Run it!
 
